@@ -1,0 +1,76 @@
+.game-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.game-instructions {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-left: 4px solid #646cff;
+}
+
+.game-instructions h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.game-instructions code {
+  background-color: #333;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.command-section {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #2a2a2a;
+  border-radius: 8px;
+}
+
+.decode-result {
+  background-color: #1a1a1a;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  border-left: 3px solid #646cff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.command-error {
+  background-color: rgba(255, 107, 107, 0.2);
+  color: #ff6b6b;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  border-left: 3px solid #ff6b6b;
+}
+
+.code-entry-button {
+  margin-top: 15px;
+  background-color: #4c4cff;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.code-entry-button:hover {
+  background-color: #3a3ad6;
+}

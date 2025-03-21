@@ -1,0 +1,105 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.code-entry-modal {
+  background-color: #2a2a2a;
+  padding: 30px;
+  border-radius: 10px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  animation: modal-appear 0.3s ease-out;
+}
+
+@keyframes modal-appear {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.code-entry-modal h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.code-entry-modal p {
+  margin-bottom: 20px;
+  text-align: center;
+  color: #ccc;
+}
+
+.code-input {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid #444;
+  background-color: #1a1a1a;
+  color: #fff;
+  font-size: 1.2rem;
+  font-family: monospace;
+  text-align: center;
+  letter-spacing: 3px;
+  border-radius: 5px;
+}
+
+.code-input:focus {
+  outline: none;
+  border-color: #646cff;
+  box-shadow: 0 0 0 2px rgba(100, 108, 255, 0.2);
+}
+
+.code-error {
+  color: #ff6b6b;
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cancel-button,
+.submit-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.cancel-button {
+  background-color: #555;
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: #666;
+}
+
+.submit-button {
+  background-color: #646cff;
+  color: white;
+}
+
+.submit-button:hover {
+  background-color: #535bf2;
+}

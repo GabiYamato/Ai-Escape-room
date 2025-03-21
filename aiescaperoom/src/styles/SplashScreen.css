@@ -1,0 +1,135 @@
+.splash-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.splash-content {
+  max-width: 700px;
+  padding: 2rem;
+  z-index: 10;
+}
+
+.splash-container h1 {
+  font-size: 4.5rem;
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+  text-shadow: 0 0 15px rgba(100, 108, 255, 0.8);
+  letter-spacing: 2px;
+}
+
+.tagline {
+  font-size: 1.7rem;
+  margin-bottom: 3rem;
+  color: #d1d1d1;
+  font-style: italic;
+}
+
+.intro-text {
+  margin-bottom: 2.5rem;
+  line-height: 1.7;
+}
+
+.intro-text p {
+  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+  color: #cccccc;
+}
+
+.button-container {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.start-button {
+  background-color: #646cff;
+  color: white;
+  border: none;
+  padding: 1rem 2.5rem;
+  font-size: 1.3rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.start-button.continue {
+  background-color: #3daf70;
+}
+
+.start-button.continue:hover {
+  background-color: #2d9f60;
+}
+
+.start-button.new-game {
+  background-color: #535bf2;
+}
+
+.start-button:hover {
+  background-color: #535bf2;
+  transform: scale(1.05);
+}
+
+.start-button:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: all 0.6s;
+}
+
+.start-button:hover:before {
+  left: 100%;
+}
+
+.splash-decoration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(circle at 20% 80%, rgba(100, 108, 255, 0.1) 0%, transparent 25%),
+                    radial-gradient(circle at 80% 20%, rgba(92, 219, 149, 0.1) 0%, transparent 25%);
+  opacity: 0.8;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .splash-container h1 {
+    font-size: 3rem;
+  }
+  
+  .tagline {
+    font-size: 1.3rem;
+  }
+  
+  .intro-text p {
+    font-size: 1rem;
+  }
+  
+  .button-container {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .start-button {
+    width: 100%;
+  }
+}

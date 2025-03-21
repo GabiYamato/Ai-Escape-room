@@ -1,0 +1,50 @@
+.command-input-container {
+  display: flex;
+  align-items: center;
+  background-color: #1a1a1a;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px solid #444;
+}
+
+.command-prompt {
+  color: #646cff;
+  font-family: monospace;
+  font-size: 1.5rem;
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.command-form {
+  display: flex;
+  flex: 1;
+  gap: 10px;
+}
+
+.command-input {
+  flex: 1;
+  padding: 12px 15px;
+  border: none;
+  background-color: transparent;
+  color: #fff;
+  font-size: 1rem;
+  font-family: monospace;
+}
+
+.command-input:focus {
+  outline: none;
+}
+
+.command-button {
+  background-color: #646cff;
+  color: white;
+  border: none;
+  padding: 0 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.command-button:hover {
+  background-color: #535bf2;
+}
