@@ -1,0 +1,101 @@
+# AI Escape Room - Solutions Reference
+
+This file contains the mapping between seeds and their corresponding solutions for each stage.
+
+## Stage 1: Image Analyst Challenge
+Format: SEED -> 4-digit Door Code
+
+10000 -> 5827
+10001 -> 6938
+10002 -> 7049
+10003 -> 8150
+10004 -> 9261
+10005 -> 0372
+10006 -> 1483
+10007 -> 2594
+10008 -> 3605
+10009 -> 4716
+
+20000 -> 7243
+20001 -> 8354
+20002 -> 9465
+20003 -> 0576
+20004 -> 1687
+20005 -> 2798
+20006 -> 3809
+20007 -> 4910
+20008 -> 5021
+20009 -> 6132
+
+30000 -> 9186
+30001 -> 0297
+30002 -> 1308
+30003 -> 2419
+30004 -> 3520
+30005 -> 4631
+30006 -> 5742
+30007 -> 6853
+30008 -> 7964
+30009 -> 8075
+
+40000 -> 2471
+40001 -> 3582
+40002 -> 4693
+40003 -> 5704
+40004 -> 6815
+40005 -> 7926
+40006 -> 8037
+40007 -> 9148
+40008 -> 0259
+40009 -> 1360
+
+50000 -> 4159
+50001 -> 5260
+50002 -> 6371
+50003 -> 7482
+50004 -> 8593
+50005 -> 9604
+50006 -> 0715
+50007 -> 1826
+50008 -> 2937
+50009 -> 3048
+
+## Stage 2: Prompt Engineer Challenge
+Format: SEED -> Secret Phrase
+
+10000 -> QUANTUM LEAP
+10001 -> NEURAL NEXUS
+10002 -> DIGITAL DAWN
+10003 -> SILICON DREAMS
+10004 -> BINARY BEACON
+...
+
+## Stage 3: AI Researcher Challenge
+Format: SEED -> 4-digit Access Code
+
+10000 -> 4721
+10001 -> 5832
+10002 -> 6943
+10003 -> 7054
+10004 -> 8165
+...
+
+## Stage 4: Machine Learning Engineer Challenge
+Format: SEED -> Secret Key
+
+10000 -> TRANSFORMER
+10001 -> ATTENTION
+10002 -> EMBEDDINGS
+10003 -> GRADIENT
+10004 -> BACKPROP
+...
+
+## Captain Challenge
+Format: SEED -> Master Code
+
+10000 -> AI-SINGULARITY-2023
+10001 -> DEEP-LEARNING-FUTURE
+10002 -> NEURAL-NETWORK-PARADIGM
+10003 -> MACHINE-VISION-SYSTEM
+10004 -> REINFORCEMENT-MODEL
+...

@@ -1,0 +1,67 @@
+AI ESCAPE ROOM - SOLUTION REFERENCE
+
+=== STAGE 1: IMAGE ANALYST ===
+Seed 10000: Code 3756
+Seed 10001: Code 8142
+Seed 10002: Code 5967
+Seed 10003: Code 2310
+Seed 10004: Code 9485
+Seed 10005: Code 1629
+Seed 10006: Code 4073
+Seed 10007: Code 7518
+Seed 10008: Code 6291
+Seed 10009: Code 0436
+Seed 10010: Code 5821
+Seed 10011: Code 3074
+Seed 10012: Code 8659
+Seed 10013: Code 9132
+Seed 10014: Code 1507
+Seed 10015: Code 4280
+Seed 10016: Code 7923
+Seed 10017: Code 6348
+Seed 10018: Code 0791
+Seed 10019: Code 2164
+
+=== STAGE 2: CODE DECODER ===
+Seed 10000: Phrase "gold experience cancer"
+Seed 10001: Phrase "quantum escape protocol"
+Seed 10002: Phrase "binary system override"
+Seed 10003: Phrase "neural network breach"
+Seed 10004: Phrase "algorithm deconstructor"
+Seed 10005: Phrase "machine learning anomaly"
+Seed 10006: Phrase "artificial intelligence key"
+Seed 10007: Phrase "cognitive system unlock"
+Seed 10008: Phrase "synthetic reasoning code"
+Seed 10009: Phrase "virtual reality exit"
+Seed 10010: Phrase "gold experience cancer"
+Seed 10011: Phrase "quantum escape protocol"
+Seed 10012: Phrase "binary system override"
+Seed 10013: Phrase "neural network breach"
+Seed 10014: Phrase "algorithm deconstructor"
+Seed 10015: Phrase "machine learning anomaly"
+Seed 10016: Phrase "artificial intelligence key"
+Seed 10017: Phrase "cognitive system unlock"
+Seed 10018: Phrase "synthetic reasoning code"
+Seed 10019: Phrase "virtual reality exit"
+
+=== STAGE 3: QUIZ EXPERT ===
+Seed 10000: Code 8214
+Seed 10001: Code 5790
+Seed 10002: Code 3167
+Seed 10003: Code 9425
+Seed 10004: Code 6078
+Seed 10005: Code 2631
+Seed 10006: Code 7943
+Seed 10007: Code 4506
+Seed 10008: Code 1892
+Seed 10009: Code 0357
+Seed 10010: Code 6541
+Seed 10011: Code 3908
+Seed 10012: Code 7463
+Seed 10013: Code 2179
+Seed 10014: Code 8036
+Seed 10015: Code 5724
+Seed 10016: Code 9380
+Seed 10017: Code 1657
+Seed 10018: Code 4295
+Seed 10019: Code 0812

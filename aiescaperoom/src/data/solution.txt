@@ -1,3 +1,43 @@
+# AI Escape Room Solutions
+
+## Stage 1 - AI Image Detection
 Solution Code: A7E3I8P6
 
-This is the combination of the codes from the AI-generated images (IDs 1, 5, 9, and 16).
+This is the combination of the codes from the AI-generated images:
+- Image at position 0,0 (ID 1): A7
+- Image at position 1,1 (ID 5): E3
+- Image at position 2,2 (ID 9): I8
+- Image at position 5,0 (ID 16): P6
+
+## Stage 2 - Morse Code Challenge
+Secret Phrase: gold experience cancer
+
+This is the decoded message from the Morse code audio file.
+Morse code translation:
+- .-. .. -.. / .--. . .-. ... --- -. .-.. .. - -.-- / -..- --..-- / .--. .-.. . .- ... . / ..-. .. -. -.. / - .... . / .--. .- - - . .-. -.
+
+## Stage 3 - AI Quiz Challenge
+Final Code: 7390
+
+This code is derived from the 4 relevant questions (with isrelavant=1):
+- Question 2 (about ReLU): code 7
+- Question 3 (about Leaky ReLU): code 3
+- Question 4 (about activation functions): code 9
+- Question 5 (about Swish): code 0
+
+Quiz Answer Key:
+1. Which of the following is a characteristic of a deep neural network? - Many layers and high complexity (option2)
+2. What is the main advantage of using ReLU as an activation function? - Prevents vanishing gradient problem (option1)
+3. Which variant of ReLU helps with the dying ReLU problem? - Leaky ReLU (option1)
+4. Which activation function is most prone to vanishing gradients? - Sigmoid (option2)
+5. What is the primary advantage of using the Swish activation function? - It outperforms ReLU in deep networks (option1)
+6. Which machine learning algorithm is most commonly used for classification tasks? - Support Vector Machines (option2)
+7. Which type of learning does a neural network undergo when trained with labeled data? - Supervised learning (option1)
+8. Which loss function is most commonly used for binary classification? - Cross-Entropy Loss (option2)
+9. Which of the following is an unsupervised learning technique? - K-Means Clustering (option3)
+10. What is the main purpose of dropout in neural networks? - Reduce overfitting (option2)
+11. Which type of neural network is commonly used for sequence data? - RNN (option2)
+12. Which optimizer is known for its adaptive learning rates? - Adam (option2)
+13. Which component of a neural network is responsible for feature extraction in CNNs? - Convolutional layer (option3)
+14. Which algorithm is used in Reinforcement Learning to estimate action-value functions? - Q-Learning (option1)
+15. Which AI technique is used to generate synthetic data that resembles real data? - GANs (option1)

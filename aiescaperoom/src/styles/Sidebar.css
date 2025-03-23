@@ -1,19 +1,69 @@
 .sidebar {
-  width: 250px;
+  width: 280px;
   background-color: #1a1a1a;
   border-right: 1px solid #333;
   padding: 20px;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  height: 100vh;
+  position: relative;
+  transition: all 0.3s ease;
 }
 
-.timer {
-  margin-bottom: 30px;
+/* Collapsed sidebar styles */
+.sidebar.collapsed {
+  width: 60px;
+  padding: 20px 10px;
+}
+
+.sidebar.collapsed .timer-section h3,
+.sidebar.collapsed .instruction-section h2,
+.sidebar.collapsed .hint-section,
+.sidebar.collapsed .code-snippets-section,
+.sidebar.collapsed .dev-reset-button {
+  display: none;
+}
+
+.sidebar.collapsed .timer-display {
+  font-size: 1rem;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  height: auto;
+  padding: 10px 5px;
+}
+
+/* Sidebar toggle button */
+.sidebar-toggle {
+  position: absolute;
+  top: 20px;
+  right: -15px;
+  width: 30px;
+  height: 30px;
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  cursor: pointer;
+  z-index: 100;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.sidebar-toggle:hover {
+  background-color: #333;
+}
+
+/* Part 1: Timer Section */
+.timer-section {
+  margin-bottom: 25px;
   text-align: center;
 }
 
-.timer h3 {
+.timer-section h3 {
   margin-bottom: 10px;
   color: #ccc;
   font-size: 1rem;
@@ -29,28 +79,28 @@
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
-.sidebar-content {
-  flex: 1;
+/* Part 2: Instructions Section */
+.instruction-section {
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #333;
 }
 
-.sidebar-content h2 {
+.instruction-section h2 {
   border-bottom: 1px solid #444;
   padding-bottom: 10px;
-  margin-bottom: 20px;
-}
-
-.sidebar-content p {
-  color: #bbb;
-  line-height: 1.6;
+  margin-bottom: 15px;
+  color: #eee;
 }
 
 .hint-section {
-  margin-top: 30px;
+  margin-bottom: 20px;
 }
 
 .hint-section h3 {
   color: #646cff;
   margin-bottom: 10px;
+  font-size: 1rem;
 }
 
 .hints-list {
@@ -66,24 +116,166 @@
   font-size: 0.9rem;
 }
 
-.progress-section {
-  margin-top: 30px;
+/* Part 3: Code Snippets Section */
+.code-snippets-section {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 15px;
+  padding-right: 5px; /* Add padding for scrollbar */
+  max-height: 30vh; /* Control the maximum height */
 }
 
-.progress-section h3 {
-  margin-bottom: 10px;
+.code-snippets-section h3 {
+  color: #646cff;
+  margin-bottom: 15px;
+  font-size: 1rem;
+  position: sticky;
+  top: 0;
+  background-color: #1a1a1a;
+  padding: 5px 0;
+  z-index: 1;
 }
 
-.progress-bar {
-  height: 10px;
+.code-locks {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Dev reset button */
+.dev-reset-button {
+  margin-top: 10px;
+  padding: 8px;
   background-color: #333;
-  border-radius: 5px;
-  overflow: hidden;
-  margin-bottom: 10px;
+  color: #ff6b6b;
+  border: 1px dashed #ff6b6b;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.2s ease;
 }
 
-.progress-fill {
+.dev-reset-button:hover {
+  background-color: #3a3a3a;
+  color: #ff8787;
+}
+
+/* Password Dialog Styles */
+.password-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 100%;
-  background-color: #646cff;
-  transition: width 0.5s ease;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.password-dialog {
+  background-color: #2a2a2a;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.password-dialog h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #ff6b6b;
+  text-align: center;
+}
+
+.password-dialog input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  background-color: #1a1a1a;
+  border: 1px solid #444;
+  color: white;
+  font-size: 1rem;
+  border-radius: 4px;
+  letter-spacing: 3px; /* To better abstract the password */
+}
+
+.password-dialog input:focus {
+  outline: none;
+  border-color: #ff6b6b;
+}
+
+.password-error {
+  color: #ff6b6b;
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.password-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.password-buttons button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.password-buttons button:first-child {
+  background-color: #444;
+  color: white;
+}
+
+.password-buttons button:first-child:hover {
+  background-color: #555;
+}
+
+.password-buttons button:last-child {
+  background-color: #ff6b6b;
+  color: white;
+}
+
+.password-buttons button:last-child:hover {
+  background-color: #e74c3c;
+}
+
+/* Scrollbar styles */
+.sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: #444;
+  border-radius: 4px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 240px;
+    padding: 15px;
+  }
+  
+  .sidebar.collapsed {
+    width: 50px;
+    padding: 15px 5px;
+  }
+  
+  .timer-display {
+    font-size: 1.5rem;
+  }
 }

@@ -1,0 +1,43 @@
+# AI Escape Room Solution Information
+
+## Captain's Workshop
+- Entry code: 2856
+- Coordinates: 37.7749° N, 122.4194° W
+
+## Engineer's Repair Task
+Task solutions:
+1. Repair Oxygen System: [connect flow regulator to vent output]
+2. Fix Power Relay: [replace capacitor C2 and connect the red wire to positive terminal]
+3. Bypass Security Lock: [connect green wire to pin 3, blue wire to pin 7]
+
+## AI Specialist Quiz 
+- The relevant questions yield code fragments that are INTENTIONALLY SHUFFLED
+- Players must figure out the correct sequence based on their knowledge
+- Special seed code reference (final answers):
+  - SEED10000: 2578
+  - SEED10001: 3694
+  - SEED10002: 1457
+  - SEED10003: 8925
+  - SEED10004: 6241
+  - SEED10005: 7893
+  - SEED10006: 4516
+  - SEED10007: 9382
+  - SEED10008: 5127
+  - SEED10009: 3768
+  - SEED10010: 1249
+  - SEED10011: 5836
+  - SEED10012: 7413
+  - SEED10013: 2965
+  - SEED10014: 8241
+  - SEED10015: 5917
+  - SEED10016: 3628
+  - SEED10017: 9451
+  - SEED10018: 4782
+  - SEED10019: 6139
+
+## Biologist's Lab
+Decontamination sequence: BEADCF
+Emergency Override: 3851
+
+## Final Escape
+Escape pod launch sequence: 739146

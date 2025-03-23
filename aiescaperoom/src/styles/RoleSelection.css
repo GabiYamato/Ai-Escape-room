@@ -1,0 +1,420 @@
+.role-selection-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #141414; /* Netflix dark background */
+  color: #fff;
+}
+
+.role-selection-content {
+  width: 90%;
+  max-width: 900px;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.role-selection-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #333;
+}
+
+/* Netflix-like profile selection */
+.profile-selection {
+  text-align: center;
+  width: 100%;
+  max-width: 980px;
+  padding: 0 20px;
+}
+
+.profile-selection h1 {
+  font-size: 3.5vw;
+  margin: 2rem 0 4rem;
+  font-weight: 500;
+}
+
+.profiles-container {
+  display: flex;
+  justify-content: center;
+  gap: 2vw;
+  flex-wrap: wrap;
+}
+
+.profile {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.profile:hover {
+  transform: scale(1.1);
+}
+
+.profile:hover .profile-name {
+  color: white;
+}
+
+.profile-icon {
+  width: 10vw;
+  height: 10vw;
+  max-width: 200px;
+  max-height: 200px;
+  min-width: 84px;
+  min-height: 84px;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 2px solid transparent;
+}
+
+.profile:hover .profile-icon {
+  border: 2px solid white;
+}
+
+.profile-icon span {
+  font-size: 5vw;
+  max-font-size: 100px;
+  min-font-size: 42px;
+}
+
+.profile-name {
+  color: #888;
+  font-size: 1.3vw;
+  min-font-size: 12px;
+  transition: color 0.3s ease;
+}
+
+/* Confirmation dialog */
+.confirmation-dialog {
+  background-color: rgba(0, 0, 0, 0.85);
+  border-radius: 4px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.confirmation-dialog h2 {
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+  font-weight: normal;
+}
+
+.selected-role {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.selected-role .role-icon {
+  width: 100px;
+  height: 100px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 50px;
+  margin-bottom: 1rem;
+}
+
+.selected-role h3 {
+  font-size: 1.5rem;
+  font-weight: normal;
+}
+
+.seed-display {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.seed-display strong {
+  font-size: 1.6rem;
+  color: #fff;
+  margin-left: 0.5rem;
+  letter-spacing: 2px;
+}
+
+.seed-note {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #aaa;
+  font-style: italic;
+}
+
+.roles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.role-card {
+  border-radius: 4px;
+  border: 2px solid #ddd;
+  padding: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.role-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.role-card.selected {
+  border-color: #4a6fa5;
+  background-color: rgba(74, 111, 165, 0.05);
+}
+
+.role-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.role-card h2 {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+  color: #444;
+}
+
+.role-card p {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.captain-toggle {
+  margin: 1.5rem 0;
+}
+
+.toggle-container {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.toggle-label {
+  margin-right: 1rem;
+  font-size: 1.1rem;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #333;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+  background-color: #e50914;
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(26px);
+}
+
+.captain-note {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #aaa;
+  font-style: italic;
+}
+
+.start-mission-button {
+  display: block;
+  width: 60%;
+  max-width: 300px;
+  margin: 0 auto;
+  padding: 1rem;
+  background-color: #4a6fa5;
+  color: white;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+}
+
+.start-mission-button:hover:not(:disabled) {
+  background-color: #3a5a8c;
+  transform: translateY(-2px);
+}
+
+.start-mission-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.confirmation-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 2rem;
+}
+
+.cancel-button, .confirm-button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.cancel-button {
+  background-color: transparent;
+  color: #fff;
+  border: 1px solid #666;
+}
+
+.cancel-button:hover {
+  border-color: #fff;
+}
+
+.confirm-button {
+  background-color: #e50914;
+  color: white;
+}
+
+.confirm-button:hover {
+  background-color: #f40612;
+  transform: translateY(-2px);
+}
+
+/* Dev reset trigger */
+.dev-reset-trigger {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  padding: 5px 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  font-size: 0.8rem;
+  color: #666;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.dev-reset-trigger:hover {
+  color: #aaa;
+}
+
+/* Seed selector */
+.seed-selector {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.seed-dropdown {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  margin-left: 5px;
+  appearance: none;
+  cursor: pointer;
+}
+
+.seed-dropdown option {
+  background-color: #333;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .roles-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .role-selection-content h1 {
+    font-size: 2rem;
+  }
+  
+  .start-mission-button {
+    width: 80%;
+  }
+  
+  .profile-selection h1 {
+    font-size: 24px;
+    margin: 1rem 0 2rem;
+  }
+  
+  .profiles-container {
+    gap: 15px;
+  }
+  
+  .profile-icon {
+    width: 84px;
+    height: 84px;
+  }
+  
+  .profile-icon span {
+    font-size: 42px;
+  }
+  
+  .profile-name {
+    font-size: 14px;
+  }
+  
+  .confirmation-dialog {
+    padding: 1.5rem;
+  }
+  
+  .confirmation-dialog h2 {
+    font-size: 1.5rem;
+  }
+  
+  .seed-display strong {
+    font-size: 1.3rem;
+  }
+}

@@ -1,0 +1,79 @@
+.code-snippet {
+  margin-bottom: 15px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #333;
+  background-color: #1a1a1a;
+  transition: all 0.3s ease;
+}
+
+.snippet-header {
+  background-color: #252525;
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #333;
+}
+
+.snippet-header h4 {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+.lock-icon {
+  font-size: 1.2rem;
+}
+
+.code-block {
+  margin: 0;
+  padding: 12px;
+  max-height: 200px; /* Increased height for better visibility */
+  overflow-y: auto;
+  font-family: monospace;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  background-color: #1a1a1a;
+  color: #bbb;
+  white-space: pre-wrap;
+  text-align: left;
+}
+
+.locked-message {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+  font-style: italic;
+}
+
+.code-snippet.locked {
+  opacity: 0.7;
+}
+
+.code-snippet.unlocked {
+  box-shadow: 0 0 10px rgba(100, 108, 255, 0.3);
+}
+
+.code-snippet.unlocked .snippet-header {
+  background-color: #222639;
+}
+
+/* Scrollbar styling for code blocks */
+.code-block::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.code-block::-webkit-scrollbar-track {
+  background: #252525;
+}
+
+.code-block::-webkit-scrollbar-thumb {
+  background-color: #444;
+  border-radius: 4px;
+}
+
+.code-block::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

@@ -1,0 +1,126 @@
+.morse-code-sheet {
+  background-color: #1a1a1a;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+  max-width: 800px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  max-height: 400px;
+}
+
+.morse-code-sheet h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #5cdb95;
+  border-bottom: 1px solid #333;
+  padding-bottom: 10px;
+}
+
+.morse-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.morse-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.morse-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #252525;
+  padding: 10px;
+  border-radius: 5px;
+  width: 75px;
+  transition: all 0.2s ease;
+  border: 1px solid #333;
+}
+
+.morse-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(92, 219, 149, 0.2);
+  border-color: #5cdb95;
+  background-color: #2a2a2a;
+}
+
+.morse-char {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #fff;
+}
+
+.morse-code {
+  font-family: monospace;
+  color: #5cdb95;
+  font-size: 1rem;
+}
+
+.morse-legend {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #333;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.morse-legend div {
+  display: flex;
+  align-items: center;
+  color: #ccc;
+}
+
+.morse-legend .dot {
+  color: #5cdb95;
+  font-size: 20px;
+  margin-right: 5px;
+}
+
+.morse-legend .dash {
+  color: #5cdb95;
+  font-size: 16px;
+  margin-right: 5px;
+}
+
+.morse-legend .space {
+  color: #5cdb95;
+  font-size: 16px;
+  margin-right: 5px;
+}
+
+@media (max-width: 768px) {
+  .morse-code-sheet {
+    padding: 15px;
+  }
+  
+  .morse-row {
+    gap: 10px;
+  }
+  
+  .morse-item {
+    width: 60px;
+    padding: 8px;
+  }
+  
+  .morse-char {
+    font-size: 1.2rem;
+  }
+  
+  .morse-code {
+    font-size: 0.9rem;
+  }
+  
+  .morse-legend {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

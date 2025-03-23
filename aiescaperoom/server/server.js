@@ -53,11 +53,6 @@ async function saveUserData(userId, userData) {
   }
 }
 
-// Calculate elapsed time in seconds
-function calculateElapsedTime(startTime) {
-  return Math.floor((Date.now() - startTime) / 1000);
-}
-
 // Routes
 app.post('/api/init', async (req, res) => {
   const { userId } = req.body;
@@ -70,21 +65,13 @@ app.post('/api/init', async (req, res) => {
   
   if (!userData) {
     userData = {
-      startTime: null,
       stage: 'splash',
-      penalties: 0,
       lastTimestamp: Date.now()
     };
   }
   
-  // Calculate timer based on startTime and penalties
-  let timer = 0;
-  if (userData.startTime) {
-    timer = calculateElapsedTime(userData.startTime) + (userData.penalties || 0) * 60;
-  }
-  
   await saveUserData(userId, userData);
-  res.json({ ...userData, timer });
+  res.json(userData);
 });
 
 app.post('/api/sync', async (req, res) => {
@@ -96,106 +83,19 @@ app.post('/api/sync', async (req, res) => {
 
   await ensureDataDirExists();
   let userData = await getUserData(userId) || {
-    startTime: null,
     stage: 'splash',
-    penalties: 0,
     lastTimestamp: Date.now()
   };
 
-  // Update data
+  // Update stage
   if (stage) userData.stage = stage;
   userData.lastTimestamp = Date.now();
   
-  // Calculate timer based on startTime and penalties
-  let timer = 0;
-  if (userData.startTime) {
-    timer = calculateElapsedTime(userData.startTime) + (userData.penalties || 0) * 60;
-  }
-
   const success = await saveUserData(userId, userData);
   if (success) {
-    res.json({ ...userData, timer });
+    res.json(userData);
   } else {
     res.status(500).json({ error: 'Failed to update data' });
-  }
-});
-
-app.post('/api/start-game', async (req, res) => {
-  const { userId } = req.body;
-  
-  if (!userId) {
-    return res.status(400).json({ error: 'User ID required' });
-  }
-
-  await ensureDataDirExists();
-  let userData = await getUserData(userId) || {
-    penalties: 0,
-    stage: 'game',
-    lastTimestamp: Date.now()
-  };
-  
-  // Only set startTime if it doesn't exist yet
-  if (!userData.startTime) {
-    userData.startTime = Date.now();
-  }
-  userData.stage = 'game';
-  
-  const timer = calculateElapsedTime(userData.startTime) + (userData.penalties || 0) * 60;
-  
-  const success = await saveUserData(userId, userData);
-  if (success) {
-    res.json({ ...userData, timer });
-  } else {
-    res.status(500).json({ error: 'Failed to start game' });
-  }
-});
-
-app.post('/api/wrong-code', async (req, res) => {
-  const { userId } = req.body;
-  
-  if (!userId) {
-    return res.status(400).json({ error: 'User ID required' });
-  }
-
-  await ensureDataDirExists();
-  let userData = await getUserData(userId);
-  
-  if (!userData) {
-    return res.status(404).json({ error: 'User not found' });
-  }
-  
-  // Add penalty
-  userData.penalties = (userData.penalties || 0) + 1;
-  
-  // Calculate timer based on startTime and penalties
-  let timer = 0;
-  if (userData.startTime) {
-    timer = calculateElapsedTime(userData.startTime) + userData.penalties * 60;
-  }
-  
-  const success = await saveUserData(userId, userData);
-  if (success) {
-    res.json({ ...userData, timer, penaltyAdded: true });
-  } else {
-    res.status(500).json({ error: 'Failed to add penalty' });
-  }
-});
-
-app.get('/api/user/:userId', async (req, res) => {
-  const { userId } = req.params;
-  
-  await ensureDataDirExists();
-  const userData = await getUserData(userId);
-  
-  if (userData) {
-    // Calculate timer based on startTime and penalties
-    let timer = 0;
-    if (userData.startTime) {
-      timer = calculateElapsedTime(userData.startTime) + (userData.penalties || 0) * 60;
-    }
-    res.json({ ...userData, timer });
-  } else {
-    res.status(404).json({ error: 'User not found' });
   }
 });
 
@@ -207,15 +107,13 @@ app.post('/api/reset', async (req, res) => {
   }
 
   const newUserData = {
-    startTime: null,
     stage: 'splash',
-    penalties: 0,
     lastTimestamp: Date.now()
   };
   
   const success = await saveUserData(userId, newUserData);
   if (success) {
-    res.json({ ...newUserData, timer: 0 });
+    res.json(newUserData);
   } else {
     res.status(500).json({ error: 'Failed to reset game' });
   }

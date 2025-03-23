@@ -4,10 +4,10 @@ const API_URL = 'http://localhost:3001/api';
 
 // Load or generate a user ID
 const getUserId = () => {
-  let userId = localStorage.getItem('user-id');
+  let userId = sessionStorage.getItem('user-id'); // Use sessionStorage instead of localStorage
   if (!userId) {
     userId = uuidv4();
-    localStorage.setItem('user-id', userId);
+    sessionStorage.setItem('user-id', userId);
   }
   return userId;
 };
@@ -31,10 +31,8 @@ export const initGameState = async () => {
     return await response.json();
   } catch (error) {
     console.error('Error initializing game state:', error);
-    // Fall back to local storage if server is unavailable
     return {
-      timer: parseInt(localStorage.getItem('escape-room-timer') || '0', 10),
-      stage: localStorage.getItem('escape-room-stage') || 'splash'
+      stage: sessionStorage.getItem('escape-room-stage') || 'splash'
     };
   }
 };
@@ -43,12 +41,14 @@ export const initGameState = async () => {
 export const syncGameState = async (stage) => {
   try {
     const userId = getUserId();
+    const requestBody = { userId, stage };
+    
     const response = await fetch(`${API_URL}/sync`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ userId, stage }),
+      body: JSON.stringify(requestBody),
     });
     
     if (!response.ok) {
@@ -58,9 +58,9 @@ export const syncGameState = async (stage) => {
     return await response.json();
   } catch (error) {
     console.error('Error syncing game state:', error);
-    // Update local storage as fallback
-    if (stage) localStorage.setItem('escape-room-stage', stage);
-    return { timer: 0, stage };
+    // Update sessionStorage as fallback
+    if (stage) sessionStorage.setItem('escape-room-stage', stage);
+    return { stage };
   }
 };
 
@@ -83,9 +83,9 @@ export const startGame = async () => {
     return await response.json();
   } catch (error) {
     console.error('Error starting game:', error);
-    // Update local storage as fallback
-    localStorage.setItem('escape-room-stage', 'game');
-    return { timer: 0, stage: 'game' };
+    // Update sessionStorage as fallback
+    sessionStorage.setItem('escape-room-stage', 'game');
+    return { stage: 'game' };
   }
 };
 
@@ -108,32 +108,14 @@ export const resetGame = async () => {
     return await response.json();
   } catch (error) {
     console.error('Error resetting game:', error);
-    // Reset local storage as fallback
-    localStorage.setItem('escape-room-timer', '0');
-    localStorage.setItem('escape-room-stage', 'splash');
-    return { timer: 0, stage: 'splash' };
+    // Reset sessionStorage as fallback
+    sessionStorage.removeItem('escape-room-stage');
+    return { stage: 'splash' };
   }
 };
 
-// Report wrong code attempt
+// Report wrong code attempt - simplified version
 export const reportWrongCode = async () => {
-  try {
-    const userId = getUserId();
-    const response = await fetch(`${API_URL}/wrong-code`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ userId }),
-    });
-    
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    
-    return await response.json();
-  } catch (error) {
-    console.error('Error reporting wrong code:', error);
-    return { error: 'Failed to update penalty' };
-  }
+  console.log('Wrong code attempt reported');
+  return { error: null };
 };

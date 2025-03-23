@@ -2,41 +2,33 @@ import { useLocation } from 'react-router-dom';
 import '../styles/StageProgress.css';
 
 const StageProgress = () => {
-  let location;
-  try {
-    location = useLocation();
-  } catch (error) {
-    console.error('Error using useLocation:', error);
-    return null;
-  }
+  const location = useLocation();
   
-  const currentPath = location?.pathname || '/';
+  // Determine current stage based on route
+  const getCurrentStage = () => {
+    const path = location.pathname;
+    if (path === '/stage1' || path === '/game') return 1;
+    if (path === '/stage2') return 2;
+    if (path === '/stage3') return 3;
+    if (path === '/stage4') return 4;
+    return 0;
+  };
   
-  // Calculate progress based on current path
-  let progressValue = 0;
-  let stageText = "Stage 1 of 2";
-  
-  if (currentPath === "/") {
-    progressValue = 0;
-    stageText = "Not Started";
-  } else if (currentPath === "/game") {
-    progressValue = 50;
-    stageText = "Stage 1 of 2";
-  } else if (currentPath === "/stage2") {
-    progressValue = 100;
-    stageText = "Stage 2 of 2";
-  }
+  const currentStage = getCurrentStage();
   
   return (
-    <div className="progress-section">
-      <h3>Progress</h3>
-      <div className="progress-bar">
-        <div 
-          className="progress-fill" 
-          style={{ width: `${progressValue}%` }}
-        ></div>
+    <div className="stage-progress">
+      <div className="progress-title">Progress</div>
+      <div className="progress-track">
+        {[1, 2, 3, 4].map(stage => (
+          <div 
+            key={stage} 
+            className={`progress-node ${currentStage >= stage ? 'completed' : ''} ${currentStage === stage ? 'current' : ''}`}
+          >
+            {stage}
+          </div>
+        ))}
       </div>
-      <p>{stageText}</p>
     </div>
   );
 };
