@@ -4,20 +4,13 @@ import CodeSnippet from './CodeSnippet';
 import { resetGame } from '../services/api';
 import '../styles/Sidebar.css';
 
-const Sidebar = ({ timer }) => {
+const Sidebar = () => {
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  
-  // Format timer as minutes:seconds
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
   
   // Get current stage based on pathname
   const getCurrentStage = () => {
@@ -117,22 +110,7 @@ const Sidebar = ({ timer }) => {
         {collapsed ? '»' : '«'}
       </button>
       
-      {/* PART 1: Timer and Reset */}
-      <div className="timer-section">
-        <h3>Time Elapsed</h3>
-        <div className="timer-display">{formatTime(timer)}</div>
-        
-        {/* Temporary dev reset button */}
-        <button 
-          className="dev-reset-button" 
-          onClick={promptForPassword}
-          title="Reset game progress (DEV ONLY)"
-        >
-          🔄 Reset Game (DEV)
-        </button>
-      </div>
-      
-      {/* PART 2: Stage Instructions */}
+      {/* PART 1: Stage Instructions */}
       <div className="instruction-section">
         <h2>Escape Room</h2>
         <div className="hint-section">
@@ -140,7 +118,7 @@ const Sidebar = ({ timer }) => {
         </div>
       </div>
       
-      {/* PART 3: Code Snippets */}
+      {/* PART 2: Code Snippets */}
       <div className="code-snippets-section">
         <h3>Collected Code Snippets</h3>
         <div className="code-locks">
@@ -161,6 +139,15 @@ const Sidebar = ({ timer }) => {
           />
         </div>
       </div>
+      
+      {/* Dev reset button */}
+      <button 
+        className="dev-reset-button" 
+        onClick={promptForPassword}
+        title="Reset game progress (DEV ONLY)"
+      >
+        🔄 Reset Game (DEV)
+      </button>
       
       {/* Password Dialog */}
       {showPasswordDialog && (

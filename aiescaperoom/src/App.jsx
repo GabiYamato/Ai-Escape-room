@@ -6,11 +6,14 @@ import StageOne from './pages/StageOne'
 import StageTwo from './pages/StageTwo'
 import StageThree from './pages/StageThree'
 import StageFour from './pages/StageFour'
+import GameScreen from './pages/GameScreen'
 import DevReset from './components/DevReset'
+import { setupGlobalErrorHandling } from './utils/errorTracker'
 import './App.css'
 
 function App() {
   const [showDevReset, setShowDevReset] = useState(false);
+  // Removed timer state
   
   // Add reload warning
   useEffect(() => {
@@ -40,6 +43,11 @@ function App() {
     };
   }, []);
 
+  // Set up global error tracking
+  useEffect(() => {
+    setupGlobalErrorHandling();
+  }, []);
+
   return (
     <>
       {showDevReset && <DevReset onClose={() => setShowDevReset(false)} />}
@@ -47,7 +55,11 @@ function App() {
       <Routes>
         <Route path="/" element={<SplashScreen />} />
         <Route path="/role-selection" element={<RoleSelection />} />
+        {/* Removed timer prop */}
+        <Route path="/game" element={<GameScreen />} />
+        {/* Main game stages */}
         <Route path="/stage1" element={<StageOne />} />
+        {/* Removed timer prop */}
         <Route path="/stage2" element={<StageTwo />} />
         <Route path="/stage3" element={<StageThree />} />
         <Route path="/stage4" element={<StageFour />} />

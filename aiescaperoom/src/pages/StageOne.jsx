@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { syncGameState, reportWrongCode } from '../services/api';
 import { generateStage1Code } from '../utils/seedGenerator';
 import DevResetTrigger from '../components/DevResetTrigger';
+import imagesData from '../data/images.json';
 import { 
   storeSeed, 
   getSeed, 
@@ -18,6 +19,7 @@ import {
   getGameState
 } from '../utils/gameState';
 import '../styles/StageOne.css';
+import DebugPanel from '../components/DebugPanel';
 
 // Detect touch device
 const isTouchDevice = () => {
@@ -52,7 +54,7 @@ const NumpadButton = ({ digit, onClick, disabled }) => {
 const StageOne = () => {
   const [flippedImageIds, setFlippedImageIds] = useState([]);
   const [discoveredCodes, setDiscoveredCodes] = useState([]);
-  const [codeValues, setCodeValues] = useState(['', '', '', '']);
+  const [enteredCode, setEnteredCode] = useState('');
   const [codeError, setCodeError] = useState('');
   const [completed, setCompleted] = useState(false);
   const [showCodeEntry, setShowCodeEntry] = useState(false);
@@ -62,6 +64,16 @@ const StageOne = () => {
   const [showCompletionDetails, setShowCompletionDetails] = useState(false);
   const [needSeed, setNeedSeed] = useState(true);
   const [selectedSlot, setSelectedSlot] = useState(0); // Track which slot is selected
+  
+  // Challenge mechanics states
+  const [timer, setTimer] = useState(0);
+  const [timerActive, setTimerActive] = useState(false);
+  const [attemptsLeft, setAttemptsLeft] = useState(4); // Start with 4 attempts
+  const [gameImages, setGameImages] = useState([]);
+  const [statusMessage, setStatusMessage] = useState('');
+  const [showMessage, setShowMessage] = useState(false);
+  const [disabledImages, setDisabledImages] = useState([]);
+  const [imageLoadError, setImageLoadError] = useState(false);
   
   const timeoutRefs = useRef({});
   const processedImageIds = useRef(new Set());
@@ -79,6 +91,8 @@ const StageOne = () => {
   const terminalRef = useRef(null);
   const typingSoundRef = useRef(null);
   const successSoundRef = useRef(null);
+  const timerRef = useRef(null);
+  const errorSoundRef = useRef(null);
   
   // Get seed from URL query parameters or local storage
   useEffect(() => {
@@ -93,6 +107,7 @@ const StageOne = () => {
       if (savedState.completed) setCompleted(savedState.completed);
       if (savedState.doorCode) setDoorCode(savedState.doorCode);
       if (savedState.needSeed !== undefined) setNeedSeed(savedState.needSeed);
+      if (savedState.attemptsLeft) setAttemptsLeft(savedState.attemptsLeft);
     }
     
     if (seedParam) {
@@ -119,8 +134,11 @@ const StageOne = () => {
     }
     
     return () => {
-      // Clear all flip timeouts
+      // Clear all timers on unmount
       Object.values(timeoutRefs.current).forEach(timeoutId => clearTimeout(timeoutId));
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
     };
   }, [location.search]);
   
@@ -131,7 +149,9 @@ const StageOne = () => {
         flippedImageIds,
         completed,
         doorCode,
-        needSeed
+        needSeed,
+        attemptsLeft,
+        discoveredCodes
       });
       
       // Store flipped images separately
@@ -139,9 +159,13 @@ const StageOne = () => {
       
       // Store processed images separately
       storeProcessedImages(processedImageIds.current);
+      
+      // Store discovered codes separately
+      storeDiscoveredCodes(discoveredCodes);
     }
-  }, [flippedImageIds, completed, doorCode, needSeed, seed]);
+  }, [flippedImageIds, completed, doorCode, needSeed, seed, attemptsLeft, discoveredCodes]);
 
+  // Redirect captain to Stage 4 when completed
   useEffect(() => {
     // Add a check for if user is captain and has completed this stage
     const isUserCaptain = localStorage.getItem('ai_escape_is_captain') === 'true';
@@ -152,6 +176,59 @@ const StageOne = () => {
       navigate(`/stage4?seed=${captainSeed}`);
     }
   }, [completed, navigate, seed]);
+
+  // Make sure images are loaded when seed is set
+  useEffect(() => {
+    if (seed && gameImages.length === 0) {
+      console.log("Initializing game images with seed:", seed, "and doorCode:", doorCode);
+      generateGameImages(seed);
+    }
+  }, [seed, doorCode, gameImages.length]);
+
+  // Timer effect - manages the 60-second countdown
+  useEffect(() => {
+    if (timerActive && timer > 0) {
+      timerRef.current = setInterval(() => {
+        setTimer(prev => {
+          if (prev <= 1) {
+            clearInterval(timerRef.current);
+            handleTimerExpired();
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, [timerActive, timer]);
+
+  // Update audio handling to include error handling
+  useEffect(() => {
+    // Set up audio error handling
+    const audioElements = [typingSoundRef.current, successSoundRef.current, errorSoundRef.current];
+    
+    audioElements.forEach(audio => {
+      if (audio) {
+        audio.addEventListener('error', (e) => {
+          console.error(`Audio error: ${e.target.src}`, e);
+          // Continue without audio rather than breaking the game
+        });
+      }
+    });
+    
+    return () => {
+      audioElements.forEach(audio => {
+        if (audio) {
+          audio.removeEventListener('error', () => {});
+        }
+      });
+    };
+  }, []);
 
   const handleSeedSubmit = (inputSeed) => {
     const seedValue = inputSeed || seedInput;
@@ -174,52 +251,245 @@ const StageOne = () => {
         url.searchParams.set('seed', seedValue);
         window.history.pushState({}, '', url);
       }
+      
+      // Generate initial game images
+      generateGameImages(seedValue);
+      
+      // Set initial attempts
+      setAttemptsLeft(4);
     } else {
       // Handle invalid seed (outside range)
       alert("Please enter a valid seed between 10000 and 100019");
     }
   };
 
-  // Generate image data based on the seed
-  const generateImageData = (seed) => {
-    // Use the seed to ensure consistent code positions
-    const seedNum = parseInt(seed) || 0;
-    const hasCodePositions = [];
-    
-    // Determine which 4 images will have code digits
-    for (let i = 0; i < 4; i++) {
-      // Generate a position based on the seed and current index
-      const pos = (seedNum + i * 7) % 30 + 1; // 1-30
-      hasCodePositions.push(pos);
-    }
-    
-    // Create the image data array with 30 images
-    const data = [];
-    for (let i = 1; i <= 30; i++) {
-      const hasCode = hasCodePositions.includes(i);
-      const codeIndex = hasCodePositions.indexOf(i);
+  // Generate game images from the image data based on seed
+  const generateGameImages = (seedValue) => {
+    try {
+      const seedNum = parseInt(seedValue) || 0;
+      console.log("Generating game images with seed:", seedNum);
       
-      // Generate a random number between 0-9 for all images to display
-      // AI images have valid code digits, non-AI images have decoy numbers
-      const displayNumber = hasCode 
-        ? doorCode[codeIndex] 
-        : ((seedNum * i) % 10).toString();
+      // Make sure imagesData is available
+      if (!imagesData || !imagesData.images || !imagesData.images.length) {
+        console.error("Images data is not available", imagesData);
+        setImageLoadError(true);
+        return;
+      }
       
-      data.push({
-        id: i,
-        hasCode: hasCode,
-        isAI: hasCode, // Flag to indicate if it's AI-generated
-        code: hasCode ? doorCode[codeIndex] : displayNumber,
-        // Using placeholder image URL - you should replace with actual diverse images
-        imageUrl: `https://picsum.photos/seed/${seedNum + i}/600/400`
+      const allImages = [...imagesData.images];
+      const aiImages = allImages.filter(img => img.isAI);
+      const normalImages = allImages.filter(img => !img.isAI);
+      
+      if (aiImages.length < 4) {
+        console.error("Not enough AI images available", aiImages);
+        setImageLoadError(true);
+        return;
+      }
+      
+      // Deterministically select 4 AI images based on seed
+      const selectedAiImages = [];
+      for (let i = 0; i < 4; i++) {
+        const index = (seedNum + i * 7) % aiImages.length;
+        const codeIndex = i % 4; // ensure we use only 0-3 indexes
+        const codeDigit = doorCode ? doorCode[codeIndex] : ((seedNum + i * 3) % 10).toString();
+        
+        selectedAiImages.push({
+          ...aiImages[index],
+          code: codeDigit,
+          isAI: true
+        });
+      }
+      
+      // Select non-AI images to fill the remaining slots (up to 30 total)
+      const shuffledNormalImages = [...normalImages].sort(() => 0.5 - Math.random());
+      const selectedNormalImages = shuffledNormalImages.slice(0, 26).map(img => ({
+        ...img,
+        code: ((seedNum + parseInt(img.id.replace('img', ''))) % 10).toString(),
+        isAI: false
+      }));
+      
+      // Combine all images with better URLs
+      const combinedImages = [...selectedAiImages, ...selectedNormalImages].map(img => ({
+        ...img,
+        // Ensure URLs are absolute and work consistently
+        url: img.url.startsWith('http') ? img.url : `https://picsum.photos/id/${img.id.replace('img', '')}/500/500`
+      }));
+      
+      // Shuffle based on seed for deterministic but random-looking order
+      const shuffledImages = [...combinedImages].sort((a, b) => {
+        const hashA = (seedNum + parseInt(a.id.replace('img', ''))) % 1000;
+        const hashB = (seedNum + parseInt(b.id.replace('img', ''))) % 1000;
+        return hashA - hashB;
       });
+      
+      console.log("Generated", shuffledImages.length, "game images");
+      setGameImages(shuffledImages);
+    } catch (err) {
+      console.error("Error generating game images:", err);
+      setImageLoadError(true);
+    }
+  };
+  
+  // Regenerate images (for when attempts run out)
+  const regenerateGameImages = () => {
+    // Use a different "seed" variation to get a different arrangement
+    const variantSeed = seed + '_' + Date.now();
+    generateGameImages(variantSeed);
+    setFlippedImageIds([]);
+  };
+  
+  // Handle image click with updated game mechanics
+  const handleImageClick = (id) => {
+    const isCurrentlyFlipped = flippedImageIds.includes(id);
+    
+    // If already flipped or disabled, do nothing
+    if (isCurrentlyFlipped || disabledImages.includes(id)) {
+      return;
     }
     
-    return data;
+    // Find the clicked image with better error handling
+    const clickedImage = gameImages.find(img => img.id === id);
+    if (!clickedImage) {
+      console.error("Could not find image with id:", id);
+      return;
+    }
+    
+    // Flip the card
+    setFlippedImageIds(prev => [...prev, id]);
+    
+    // Clear any existing timers to prevent race conditions
+    if (clickedImage.isAI && timerActive) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+      setTimerActive(false);
+      setTimer(0);
+    }
+    
+    if (clickedImage.isAI) {
+      // Handle AI image click
+      handleAiImageClick(clickedImage);
+    } else {
+      // Handle non-AI image click
+      handleNonAiImageClick(clickedImage);
+    }
   };
-
-  const imageData = generateImageData(seed);
-
+  
+  // Handle AI image click
+  const handleAiImageClick = (image) => {
+    // Check if we already processed this image
+    if (processedImageIds.current.has(image.id)) {
+      addTerminalMessage(`IMAGE #${image.id} ALREADY ANALYZED`, "system");
+      return;
+    }
+    
+    // If timer is active, we found an AI image in time!
+    if (timerActive) {
+      setTimerActive(false);
+      clearInterval(timerRef.current);
+      setTimer(0);
+      
+      addTerminalMessage("AI IMAGE LOCATED SUCCESSFULLY WITHIN TIME LIMIT", "success");
+      showTemporaryMessage("AI image located! Timer stopped.");
+      
+      // Clear disabled images
+      setDisabledImages([]);
+    }
+    
+    // Extract the code fragment
+    const updatedCodes = [...discoveredCodes, image.code];
+    setDiscoveredCodes(updatedCodes);
+    processedImageIds.current.add(image.id);
+    
+    // Terminal feedback
+    addTerminalMessage(`AI-GENERATED IMAGE DETECTED: ID #${image.id}`, "success");
+    addTerminalMessage(`CODE FRAGMENT EXTRACTED - STORED IN MEMORY BANKS`, "success");
+    
+    // Check if all 4 fragments are found
+    if (updatedCodes.length === 4) {
+      addTerminalMessage(`ALL FOUR CODE FRAGMENTS EXTRACTED`, "success");
+      addTerminalMessage(`SECURITY OVERRIDE SEQUENCE NOW AVAILABLE`, "warning");
+    }
+    
+    // Play success sound
+    if (successSoundRef.current) {
+      successSoundRef.current.currentTime = 0;
+      successSoundRef.current.play().catch(err => {});
+    }
+    
+    // Store discovered codes
+    storeDiscoveredCodes(updatedCodes);
+    storeProcessedImages(processedImageIds.current);
+  };
+  
+  // Handle non-AI image click
+  const handleNonAiImageClick = (image) => {
+    // If timer is already active, just add a message
+    if (timerActive) {
+      addTerminalMessage(`IMAGE #${image.id} ANALYZED - NOT AI GENERATED`, "error");
+      return;
+    }
+    
+    // Start the 60-second timer
+    setTimer(60);
+    setTimerActive(true);
+    
+    // Disable this image so it can't be clicked again during this challenge
+    setDisabledImages([image.id]);
+    
+    // Terminal feedback
+    addTerminalMessage(`INCORRECT IMAGE SELECTED - 60 SECOND TIMER INITIATED`, "warning");
+    addTerminalMessage(`LOCATE AN AI-GENERATED IMAGE IMMEDIATELY`, "warning");
+    showTemporaryMessage("Non-AI image detected! Find an AI image within 60 seconds.");
+    
+    // Play error sound
+    if (errorSoundRef.current) {
+      errorSoundRef.current.currentTime = 0;
+      errorSoundRef.current.play().catch(err => {});
+    }
+  };
+  
+  // Render timer bar
+  const renderTimerBar = () => {
+    if (!timerActive) return null;
+    
+    const percentage = (timer / 60) * 100;
+    return (
+      <div className="timer-bar">
+        <div 
+          className={`timer-progress ${percentage < 30 ? 'danger' : ''}`} 
+          style={{ width: `${percentage}%` }}
+        />
+      </div>
+    );
+  };
+  
+  // Render attempts indicator
+  const renderAttemptsIndicator = () => {
+    if (!timerActive && attemptsLeft === 4) return null;
+    
+    return (
+      <div className="attempts-indicator">
+        {[...Array(4)].map((_, i) => (
+          <div 
+            key={i} 
+            className={`attempt ${i >= attemptsLeft ? 'used' : ''}`}
+          />
+        ))}
+      </div>
+    );
+  };
+  
+  // Render status message
+  const renderStatusMessage = () => {
+    if (!showMessage) return null;
+    
+    return (
+      <div className={`message-overlay ${showMessage ? 'visible' : ''}`}>
+        {statusMessage}
+      </div>
+    );
+  };
+  
   // Add terminal message effect
   const addTerminalMessage = (message, type = "system") => {
     if (typingSoundRef.current) {
@@ -236,90 +506,65 @@ const StageOne = () => {
       }
     }, 100);
   };
-
-  // Updated image click handler with improved card flipping
-  const handleImageClick = (id) => {
-    const isCurrentlyFlipped = flippedImageIds.includes(id);
+  
+  // Show temporary message overlay
+  const showTemporaryMessage = (message) => {
+    setStatusMessage(message);
+    setShowMessage(true);
     
-    // If already flipped, flip it back
-    if (isCurrentlyFlipped) {
-      setFlippedImageIds(prev => prev.filter(imgId => imgId !== id));
-      return;
-    }
+    setTimeout(() => {
+      setShowMessage(false);
+    }, 2000);
+  };
+  
+  // Handle timer expiration
+  const handleTimerExpired = () => {
+    setTimerActive(false);
     
-    // Flip the card
-    setFlippedImageIds(prev => [...prev, id]);
-    
-    // If image has a code and hasn't been processed before, add it to discovered codes
-    const clickedImage = imageData.find(img => img.id === id);
-    if (clickedImage && clickedImage.isAI && !processedImageIds.current.has(id)) {
-      const updatedCodes = [...discoveredCodes, clickedImage.code];
-      setDiscoveredCodes(updatedCodes);
-      processedImageIds.current.add(id);
+    // Reduce attempts
+    setAttemptsLeft(prev => {
+      const newAttempts = prev - 1;
       
-      // Add terminal messages
-      addTerminalMessage(`AI-GENERATED IMAGE DETECTED: ID #${id}`, "success");
-      addTerminalMessage(`CODE FRAGMENT EXTRACTED: [${clickedImage.code}]`, "success");
-      
-      // Play success sound
-      if (successSoundRef.current) {
-        successSoundRef.current.currentTime = 0;
-        successSoundRef.current.play().catch(err => {});
+      if (newAttempts <= 0) {
+        // No attempts left, reset and regenerate
+        showTemporaryMessage("All attempts used! Shuffling images and resetting progress...");
+        addTerminalMessage("SECURITY SYSTEM RECONFIGURING - ALL ATTEMPTS EXPENDED", "error");
+        addTerminalMessage("RESETTING CODE FRAGMENTS - SCANNING FOR NEW PATTERNS", "warning");
+        
+        // Reset discovered codes
+        setDiscoveredCodes([]);
+        processedImageIds.current = new Set();
+        storeDiscoveredCodes([]);
+        storeProcessedImages(new Set());
+        
+        // Reset attempts and regenerate images
+        setTimeout(() => {
+          regenerateGameImages();
+          setAttemptsLeft(4);
+          setDisabledImages([]);
+        }, 2000);
+        
+        return 0;
+      } else {
+        // Still have attempts left
+        addTerminalMessage(`TIME EXPIRED - ${newAttempts} ATTEMPT${newAttempts !== 1 ? 'S' : ''} REMAINING`, "warning");
+        showTemporaryMessage(`Time expired! ${newAttempts} attempt${newAttempts !== 1 ? 's' : ''} remaining`);
+        setDisabledImages([]);
+        return newAttempts;
       }
-      
-      // Store discovered codes and processed images
-      storeDiscoveredCodes(updatedCodes);
-      storeProcessedImages(processedImageIds.current);
-    } else if (!clickedImage.isAI) {
-      // Message for non-AI images
-      addTerminalMessage(`IMAGE #${id} ANALYSIS: AUTHENTIC IMAGE - NO CODE DETECTED`, "system");
-    }
-  };
-
-  const handleCodeEntry = () => {
-    setShowCodeEntry(true);
-    clearCodeEntry();
-  };
-
-  // Add a function to handle numpad clicks
-  const handleNumpadClick = (digit) => {
-    // Create a copy of the current code values
-    const newCodeValues = [...codeValues];
-    
-    // Update the selected slot with the clicked digit
-    newCodeValues[selectedSlot] = digit;
-    
-    // Update state
-    setCodeValues(newCodeValues);
-    
-    // Move to next empty slot automatically
-    if (selectedSlot < 3) {
-      const nextSlot = selectedSlot + 1;
-      setSelectedSlot(nextSlot);
-    }
+    });
   };
   
-  // Function to handle slot selection
-  const handleSlotClick = (index) => {
-    setSelectedSlot(index);
-  };
-  
-  // Clear function to reset code entry
-  const clearCodeEntry = () => {
-    setCodeValues(['', '', '', '']);
-    setSelectedSlot(0);
+  // New handler for the inline code input
+  const handleCodeInputChange = (e) => {
+    setEnteredCode(e.target.value.replace(/\D/g, '').slice(0, 4));
     setCodeError('');
   };
 
-  const handleCodeSubmit = async () => {
-    // Check if all slots are filled
-    if (codeValues.some(val => val === '')) {
-      setCodeError('Please fill all slots with numbers');
-      return;
-    }
+  // New handler for code submission directly from the inline input
+  const handleInlineCodeSubmit = async () => {
+    addTerminalMessage("VERIFYING ACCESS CODE...", "system");
     
-    // Check if the entered code matches the door code
-    const enteredCode = codeValues.join('');
     if (enteredCode === doorCode) {
       addTerminalMessage("ACCESS CODE VERIFIED - SECURITY OVERRIDE SUCCESSFUL", "success");
       addTerminalMessage("IMAGE SUBSYSTEM BYPASSED - ACCESSING NEXT SECURITY LAYER", "success");
@@ -330,7 +575,6 @@ const StageOne = () => {
       
       setCodeError('');
       setCompleted(true);
-      setShowCodeEntry(false);
       await syncGameState('stage1-completed');
       
       // Mark stage as complete
@@ -341,8 +585,8 @@ const StageOne = () => {
       
       setCodeError('Incorrect code. Try again!');
       await reportWrongCode();
-      // Reset the code slots
-      setCodeValues(['', '', '', '']);
+      // Reset the code input
+      setEnteredCode('');
     }
   };
 
@@ -354,14 +598,18 @@ const StageOne = () => {
     navigate('/');
   };
 
-  // Add this effect to auto-validate the code when all slots are filled
-  useEffect(() => {
-    // If all code slots are filled, automatically try to submit the code
-    if (codeValues.every(val => val !== '') && showCodeEntry) {
-      handleCodeSubmit();
-    }
-  }, [codeValues]);
-
+  // Debug state for the debug panel
+  const debugState = {
+    seed,
+    doorCode,
+    imagesLoaded: gameImages.length > 0,
+    aiCount: gameImages.filter(img => img?.isAI).length || 0,
+    discoveredCount: discoveredCodes.length,
+    timerActive,
+    attemptsLeft,
+    error: imageLoadError ? "Image loading error" : null
+  };
+  
   // Seed entry screen
   if (needSeed) {
     return (
@@ -397,6 +645,44 @@ const StageOne = () => {
     <div className="stage-container paper-bg lab-theme">
       <audio ref={typingSoundRef} src="/sounds/typing.mp3" />
       <audio ref={successSoundRef} src="/sounds/success.mp3" />
+      <audio ref={errorSoundRef} src="/sounds/error.mp3" />
+      
+      {/* Render error message if image loading fails */}
+      {imageLoadError && (
+        <div className="error-message" style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          background: 'rgba(255,0,0,0.8)',
+          color: 'white',
+          padding: '20px',
+          borderRadius: '5px',
+          zIndex: 1000
+        }}>
+          Error loading images. Please refresh the page.
+          <button
+            onClick={() => window.location.reload()}
+            style={{
+              display: 'block',
+              margin: '10px auto 0',
+              padding: '5px 10px',
+              background: 'white',
+              color: 'black',
+              border: 'none',
+              borderRadius: '3px',
+              cursor: 'pointer'
+            }}
+          >
+            Refresh
+          </button>
+        </div>
+      )}
+      
+      {/* Game status elements */}
+      {renderTimerBar()}
+      {renderAttemptsIndicator()}
+      {renderStatusMessage()}
       
       <div className="security-hud">
         <div className="facility-section">
@@ -427,9 +713,43 @@ const StageOne = () => {
               {/* Instructions with lab theme */}
               <div className="lab-instructions">
                 <h3>SECURITY BREACH PROTOCOL</h3>
-                <p>You've infiltrated Dr. Finkelstein's classified image database. Some images contain embedded access codes.</p>
-                <p>OBJECTIVE: Identify all AI-generated images to extract the 4-digit access code.</p>
-                <p>WARNING: System will detect tampering if incorrect code is entered.</p>
+                <p>You've infiltrated Dr. Finkelstein's classified image database. Each image contains a code digit.</p>
+                <p>OBJECTIVE: Identify AI-generated images to extract the 4-digit access code.</p>
+                <p>WARNING: If you select a non-AI image, you have 60 seconds to find a real AI image. You have 4 attempts.</p>
+              </div>
+              
+              {/* Always visible code entry interface */}
+              <div className="inline-code-entry">
+                <h3>SECURITY OVERRIDE INPUT</h3>
+                <div className="code-entry-container">
+                  <div className="code-entry-terminal">
+                    <p className="terminal-text">ENTER 4-DIGIT SECURITY OVERRIDE CODE</p>
+                    
+                    <div className="override-input-container">
+                      <input
+                        type="text"
+                        value={enteredCode}
+                        onChange={handleCodeInputChange}
+                        maxLength="4"
+                        placeholder="0000"
+                        pattern="[0-9]*"
+                        inputMode="numeric"
+                        className="override-input"
+                        autoFocus
+                      />
+                    </div>
+                    
+                    {codeError && <p className="override-error">{codeError}</p>}
+                    
+                    <button 
+                      className="execute-button"
+                      onClick={handleInlineCodeSubmit}
+                      disabled={enteredCode.length !== 4}
+                    >
+                      EXECUTE OVERRIDE
+                    </button>
+                  </div>
+                </div>
               </div>
               
               {/* Discovered codes section */}
@@ -446,120 +766,57 @@ const StageOne = () => {
                     <div className="no-fragments">NO CODE FRAGMENTS DETECTED</div>
                   }
                 </div>
-                <button 
-                  className="override-button" 
-                  onClick={handleCodeEntry}
-                  disabled={discoveredCodes.length < 4}
-                >
-                  ENTER SECURITY OVERRIDE
-                </button>
               </div>
               
               {/* Image database with lab scanner theme */}
-              <div className="security-section fullscreen-grid">
+              <div className="security-section">
                 <h3>CLASSIFIED IMAGE SCANNER</h3>
-                <div className="image-grid two-column">
-                  {imageData.map((image) => (
-                    <div 
-                      key={image.id} 
-                      className={`scanner-image ${flippedImageIds.includes(image.id) ? 'flipped' : ''} ${image.isAI ? 'ai-generated' : ''}`}
-                      onClick={() => handleImageClick(image.id)}
-                    >
-                      <div className="card-inner">
-                        <div className="card-front">
-                          <div className="image-container">
-                            <img src={image.imageUrl} alt={`Classified Image ${image.id}`} />
-                            <div className="image-interface">
-                              <div className="image-id">ID-{image.id}</div>
-                              <div className="scan-button">ANALYZE</div>
+                <div className="image-grid">
+                  {gameImages && gameImages.length > 0 ? (
+                    gameImages.map((image) => (
+                      <div 
+                        key={image.id} 
+                        className={`scanner-image ${flippedImageIds.includes(image.id) ? 'flipped' : ''} ${disabledImages.includes(image.id) ? 'disabled' : ''}`}
+                        onClick={() => handleImageClick(image.id)}
+                      >
+                        <div className="card-inner">
+                          <div className="card-front">
+                            <div className="image-container">
+                              <img 
+                                src={image.url} 
+                                alt={`Classified Image ${image.id}`}
+                                onError={(e) => {
+                                  console.error("Image failed to load:", image.url);
+                                  e.target.src = "https://via.placeholder.com/500?text=Image+Not+Found";
+                                }}
+                              />
+                              <div className="image-interface">
+                                <div className="image-id">ID-{image.id}</div>
+                                <div className="scan-button">ANALYZE</div>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <div className="card-back">
-                          <div className="analysis-result">
-                            <div className="result-header">
-                              <span>IMAGE #{image.id}</span>
-                              {image.isAI ? 
-                                <span className="ai-tag">AI-GENERATED</span> : 
-                                <span className="real-tag">AUTHENTIC</span>
-                              }
-                            </div>
-                            <div className="result-content">
-                              <div className="number-display">
-                                <span className="number-label">EXTRACTED NUMBER:</span>
-                                <span className={`displayed-number ${image.isAI ? 'valid-number' : 'invalid-number'}`}>
-                                  {image.code}
-                                </span>
-                                {image.isAI ? (
-                                  <div className="code-detected">CODE FRAGMENT CONFIRMED</div>
-                                ) : (
-                                  <div className="no-code">INVALID CODE FRAGMENT</div>
-                                )}
+                          <div className="card-back">
+                            <div className="analysis-result">
+                              <div className="result-header">
+                                <span>IMAGE #{image.id}</span>
+                              </div>
+                              <div className="result-content">
+                                <div className="code-value">{image.code}</div>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="loading-message">
+                      {imageLoadError ? "Error loading images. Please refresh." : "Loading image database... Please wait."}
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
             </div>
-            
-            {/* Security override terminal */}
-            {showCodeEntry && (
-              <div className="code-entry-overlay">
-                <div className="override-terminal">
-                  <h3 className="override-header">SECURITY OVERRIDE TERMINAL</h3>
-                  <p className="terminal-text">ENTER 4-DIGIT ACCESS CODE:</p>
-                  
-                  <div className="code-slots">
-                    {codeValues.map((value, index) => (
-                      <CodeSlot 
-                        key={index} 
-                        value={value} 
-                        isSelected={selectedSlot === index}
-                        onClick={() => handleSlotClick(index)} 
-                      />
-                    ))}
-                  </div>
-                  
-                  <div className="numpad">
-                    <div className="numpad-row">
-                      <NumpadButton digit="1" onClick={handleNumpadClick} />
-                      <NumpadButton digit="2" onClick={handleNumpadClick} />
-                      <NumpadButton digit="3" onClick={handleNumpadClick} />
-                    </div>
-                    <div className="numpad-row">
-                      <NumpadButton digit="4" onClick={handleNumpadClick} />
-                      <NumpadButton digit="5" onClick={handleNumpadClick} />
-                      <NumpadButton digit="6" onClick={handleNumpadClick} />
-                    </div>
-                    <div className="numpad-row">
-                      <NumpadButton digit="7" onClick={handleNumpadClick} />
-                      <NumpadButton digit="8" onClick={handleNumpadClick} />
-                      <NumpadButton digit="9" onClick={handleNumpadClick} />
-                    </div>
-                    <div className="numpad-row">
-                      <button className="numpad-clear" onClick={clearCodeEntry}>Clear</button>
-                      <NumpadButton digit="0" onClick={handleNumpadClick} />
-                      <button className="numpad-delete" onClick={() => {
-                        const newCodeValues = [...codeValues];
-                        newCodeValues[selectedSlot] = '';
-                        setCodeValues(newCodeValues);
-                      }}>Del</button>
-                    </div>
-                  </div>
-                  
-                  {codeError && <p className="override-error">{codeError}</p>}
-                  
-                  <div className="terminal-buttons">
-                    <button className="cancel-button" onClick={() => setShowCodeEntry(false)}>ABORT</button>
-                    <button className="execute-button" onClick={handleCodeSubmit}>EXECUTE OVERRIDE</button>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         ) : (
           <div className="escape-success">
@@ -594,6 +851,7 @@ const StageOne = () => {
         )}
       </div>
       <DevResetTrigger />
+      <DebugPanel gameState={debugState} />
     </div>
   );
 };

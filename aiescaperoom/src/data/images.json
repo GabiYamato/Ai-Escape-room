@@ -1,36 +1,304 @@
 {
   "images": [
-    { "id": 1, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "A7", "isAiGenerated": true, "position": [0, 0] },
-    { "id": 2, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "B2", "isAiGenerated": false, "position": [0, 1] },
-    { "id": 3, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "C9", "isAiGenerated": false, "position": [0, 2] },
-    { "id": 4, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "D4", "isAiGenerated": false, "position": [1, 0] },
-    { "id": 5, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "E3", "isAiGenerated": true, "position": [1, 1] },
-    { "id": 6, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "F6", "isAiGenerated": false, "position": [1, 2] },
-    { "id": 7, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "G1", "isAiGenerated": false, "position": [2, 0] },
-    { "id": 8, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "H5", "isAiGenerated": false, "position": [2, 1] },
-    { "id": 9, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "I8", "isAiGenerated": true, "position": [2, 2] },
-    { "id": 10, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "J3", "isAiGenerated": false, "position": [3, 0] },
-    { "id": 11, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "K7", "isAiGenerated": false, "position": [3, 1] },
-    { "id": 12, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "L2", "isAiGenerated": false, "position": [3, 2] },
-    { "id": 13, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "M9", "isAiGenerated": false, "position": [4, 0] },
-    { "id": 14, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "N4", "isAiGenerated": false, "position": [4, 1] },
-    { "id": 15, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "O3", "isAiGenerated": false, "position": [4, 2] },
-    { "id": 16, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "P6", "isAiGenerated": true, "position": [5, 0] },
-    { "id": 17, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "Q1", "isAiGenerated": false, "position": [5, 1] },
-    { "id": 18, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "R5", "isAiGenerated": false, "position": [5, 2] },
-    { "id": 19, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "S8", "isAiGenerated": false, "position": [6, 0] },
-    { "id": 20, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "T3", "isAiGenerated": false, "position": [6, 1] },
-    { "id": 21, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "U7", "isAiGenerated": false, "position": [6, 2] },
-    { "id": 22, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "V2", "isAiGenerated": false, "position": [7, 0] },
-    { "id": 23, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "W9", "isAiGenerated": false, "position": [7, 1] },
-    { "id": 24, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "X4", "isAiGenerated": false, "position": [7, 2] },
-    { "id": 25, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "Y3", "isAiGenerated": false, "position": [8, 0] },
-    { "id": 26, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "Z6", "isAiGenerated": false, "position": [8, 1] },
-    { "id": 27, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "A1", "isAiGenerated": false, "position": [8, 2] },
-    { "id": 28, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "B5", "isAiGenerated": false, "position": [9, 0] },
-    { "id": 29, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "C8", "isAiGenerated": false, "position": [9, 1] },
-    { "id": 30, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "D3", "isAiGenerated": false, "position": [9, 2] },
-    { "id": 31, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "E7", "isAiGenerated": false, "position": [10, 0] },
-    { "id": 32, "url": "https://images6.alphacoders.com/131/1313754.png", "code": "F2", "isAiGenerated": false, "position": [10, 1] }
+    {
+      "id": "img001",
+      "url": "https://picsum.photos/id/1/500/500",
+      "isAI": false,
+      "category": "nature"
+    },
+    {
+      "id": "img002",
+      "url": "https://picsum.photos/id/10/500/500",
+      "isAI": false,
+      "category": "nature"
+    },
+    {
+      "id": "img003",
+      "url": "https://picsum.photos/id/100/500/500",
+      "isAI": false,
+      "category": "nature"
+    },
+    {
+      "id": "img004",
+      "url": "https://picsum.photos/id/1000/500/500",
+      "isAI": false,
+      "category": "nature"
+    },
+    {
+      "id": "img005",
+      "url": "https://picsum.photos/id/1001/500/500",
+      "isAI": false,
+      "category": "buildings"
+    },
+    {
+      "id": "img006",
+      "url": "https://picsum.photos/id/1002/500/500",
+      "isAI": false,
+      "category": "animals"
+    },
+    {
+      "id": "img007",
+      "url": "https://picsum.photos/id/1003/500/500",
+      "isAI": false,
+      "category": "buildings"
+    },
+    {
+      "id": "img008",
+      "url": "https://picsum.photos/id/1004/500/500",
+      "isAI": false,
+      "category": "people"
+    },
+    {
+      "id": "img009",
+      "url": "https://picsum.photos/id/1005/500/500",
+      "isAI": false,
+      "category": "people"
+    },
+    {
+      "id": "img010",
+      "url": "https://picsum.photos/id/1006/500/500",
+      "isAI": false,
+      "category": "animals"
+    },
+    {
+      "id": "img011",
+      "url": "https://picsum.photos/id/1008/500/500",
+      "isAI": false,
+      "category": "people"
+    },
+    {
+      "id": "img012",
+      "url": "https://picsum.photos/id/1009/500/500",
+      "isAI": false,
+      "category": "nature"
+    },
+    {
+      "id": "img013",
+      "url": "https://picsum.photos/id/101/500/500",
+      "isAI": false,
+      "category": "buildings"
+    },
+    {
+      "id": "img014",
+      "url": "https://picsum.photos/id/1010/500/500",
+      "isAI": false,
+      "category": "animals"
+    },
+    {
+      "id": "img015",
+      "url": "https://picsum.photos/id/1011/500/500",
+      "isAI": false,
+      "category": "animals"
+    },
+    {
+      "id": "img016",
+      "url": "https://picsum.photos/id/1012/500/500",
+      "isAI": false,
+      "category": "nature"
+    },
+    {
+      "id": "img017",
+      "url": "https://picsum.photos/id/1013/500/500",
+      "isAI": false,
+      "category": "nature"
+    },
+    {
+      "id": "img018",
+      "url": "https://picsum.photos/id/1014/500/500",
+      "isAI": false,
+      "category": "nature"
+    },
+    {
+      "id": "img019",
+      "url": "https://picsum.photos/id/1015/500/500",
+      "isAI": false,
+      "category": "nature"
+    },
+    {
+      "id": "img020",
+      "url": "https://picsum.photos/id/1016/500/500",
+      "isAI": false,
+      "category": "nature"
+    },
+    {
+      "id": "img021",
+      "url": "https://picsum.photos/id/1018/500/500",
+      "isAI": false,
+      "category": "nature"
+    },
+    {
+      "id": "img022",
+      "url": "https://picsum.photos/id/1019/500/500",
+      "isAI": false,
+      "category": "nature"
+    },
+    {
+      "id": "img023",
+      "url": "https://picsum.photos/id/102/500/500",
+      "isAI": false,
+      "category": "tech"
+    },
+    {
+      "id": "img024",
+      "url": "https://picsum.photos/id/1020/500/500",
+      "isAI": false,
+      "category": "nature"
+    },
+    {
+      "id": "img025",
+      "url": "https://picsum.photos/id/1021/500/500",
+      "isAI": false,
+      "category": "nature"
+    },
+    {
+      "id": "img026",
+      "url": "https://picsum.photos/id/1022/500/500",
+      "isAI": false,
+      "category": "buildings"
+    },
+    {
+      "id": "img027",
+      "url": "https://picsum.photos/id/1023/500/500",
+      "isAI": false,
+      "category": "animals"
+    },
+    {
+      "id": "img028",
+      "url": "https://picsum.photos/id/1024/500/500",
+      "isAI": false,
+      "category": "animals"
+    },
+    {
+      "id": "img029",
+      "url": "https://picsum.photos/id/1025/500/500",
+      "isAI": false,
+      "category": "animals"
+    },
+    {
+      "id": "img030",
+      "url": "https://picsum.photos/seed/ai30/500/500",
+      "isAI": true,
+      "category": "ai-generated"
+    },
+    {
+      "id": "img031",
+      "url": "https://picsum.photos/seed/ai31/500/500",
+      "isAI": true,
+      "category": "ai-generated"
+    },
+    {
+      "id": "img032",
+      "url": "https://picsum.photos/seed/ai32/500/500",
+      "isAI": true,
+      "category": "ai-generated"
+    },
+    {
+      "id": "img033",
+      "url": "https://picsum.photos/seed/ai33/500/500",
+      "isAI": true,
+      "category": "ai-generated"
+    },
+    {
+      "id": "img034",
+      "url": "https://picsum.photos/seed/ai34/500/500",
+      "isAI": true,
+      "category": "ai-generated"
+    },
+    {
+      "id": "img035",
+      "url": "https://picsum.photos/seed/ai35/500/500",
+      "isAI": true,
+      "category": "ai-generated"
+    },
+    {
+      "id": "img036",
+      "url": "https://picsum.photos/seed/ai36/500/500",
+      "isAI": true,
+      "category": "ai-generated"
+    },
+    {
+      "id": "img037",
+      "url": "https://picsum.photos/seed/ai37/500/500",
+      "isAI": true,
+      "category": "ai-generated"
+    },
+    {
+      "id": "img038",
+      "url": "https://picsum.photos/seed/ai38/500/500",
+      "isAI": true,
+      "category": "ai-generated"
+    },
+    {
+      "id": "img039",
+      "url": "https://picsum.photos/seed/ai39/500/500",
+      "isAI": true,
+      "category": "ai-generated"
+    },
+    {
+      "id": "img040",
+      "url": "https://picsum.photos/id/1026/500/500",
+      "isAI": false,
+      "category": "nature"
+    },
+    {
+      "id": "img041",
+      "url": "https://picsum.photos/id/1027/500/500",
+      "isAI": false,
+      "category": "people"
+    },
+    {
+      "id": "img042",
+      "url": "https://picsum.photos/id/1028/500/500",
+      "isAI": false,
+      "category": "people"
+    },
+    {
+      "id": "img043",
+      "url": "https://picsum.photos/id/1029/500/500",
+      "isAI": false,
+      "category": "nature"
+    },
+    {
+      "id": "img044",
+      "url": "https://picsum.photos/id/103/500/500",
+      "isAI": false,
+      "category": "tech"
+    },
+    {
+      "id": "img045",
+      "url": "https://picsum.photos/id/1031/500/500",
+      "isAI": false,
+      "category": "nature"
+    },
+    {
+      "id": "img046",
+      "url": "https://picsum.photos/id/1032/500/500",
+      "isAI": false,
+      "category": "buildings"
+    },
+    {
+      "id": "img047",
+      "url": "https://picsum.photos/id/1033/500/500",
+      "isAI": false,
+      "category": "nature"
+    },
+    {
+      "id": "img048",
+      "url": "https://picsum.photos/id/1035/500/500",
+      "isAI": false,
+      "category": "nature"
+    },
+    {
+      "id": "img049",
+      "url": "https://picsum.photos/id/1036/500/500",
+      "isAI": false,
+      "category": "nature"
+    },
+    {
+      "id": "img050",
+      "url": "https://picsum.photos/id/1039/500/500",
+      "isAI": false,
+      "category": "nature"
+    }
   ]
 }

@@ -63,22 +63,22 @@ const CommandInput = ({ onCommand }) => {
   
   return (
     <div className="command-input-container">
-      <div className="command-prompt">{'>'}</div>
-      <form className="command-form" onSubmit={handleSubmit}>
-        <input
-          ref={inputRef}
-          type="text"
-          value={command}
-          onChange={(e) => setCommand(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Enter command (e.g., DECODE 1 1)"
-          className="command-input"
-          autoComplete="off"
-          spellCheck="false"
-        />
-        <button type="submit" className="command-button">
-          Execute
-        </button>
+      <form onSubmit={handleSubmit} className="command-form">
+        <div className="command-prompt">
+          <span className="prompt-symbol">&gt;</span>
+          <input
+            ref={inputRef}
+            type="text"
+            value={command}
+            onChange={(e) => setCommand(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Enter command..."
+            className="command-text-input"
+            spellCheck="false"
+            autoComplete="off"
+          />
+        </div>
+        <button type="submit" className="execute-button">EXECUTE</button>
       </form>
     </div>
   );

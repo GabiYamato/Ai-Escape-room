@@ -6,7 +6,7 @@ import { generateStage2Phrase } from '../utils/seedGenerator';
 import '../styles/StageTwo.css';
 import DevResetTrigger from '../components/DevResetTrigger';
 
-const StageTwo = ({ timer, setTimer }) => {
+const StageTwo = () => {
   const [showSecretDialog, setShowSecretDialog] = useState(false);
   const [secretPhrase, setSecretPhrase] = useState('');
   const [error, setError] = useState('');
@@ -16,6 +16,9 @@ const StageTwo = ({ timer, setTimer }) => {
   const [needSeed, setNeedSeed] = useState(true);
   const [correctPhrase, setCorrectPhrase] = useState('');
   const [showCompletionDetails, setShowCompletionDetails] = useState(false);
+  
+  // Add penalty time counter since we removed the global timer
+  const [penaltyTime, setPenaltyTime] = useState(0);
   
   const audioRef = useRef(null);
   const navigate = useNavigate();
@@ -41,13 +44,8 @@ const StageTwo = ({ timer, setTimer }) => {
       handleSeedSubmit(seedParam);
     }
     
-    // Every 1 second, increment the timer
-    const timerInterval = setInterval(() => {
-      setTimer(prevTimer => prevTimer + 1);
-    }, 1000);
-    
-    return () => clearInterval(timerInterval);
-  }, [location.search, setTimer]);
+    // Removed the timer increment code that was here
+  }, [location.search]);
 
   const handleSeedSubmit = (inputSeed) => {
     const seedValue = inputSeed || seedInput;
@@ -131,7 +129,8 @@ const StageTwo = ({ timer, setTimer }) => {
     } else {
       // Report wrong code to add penalty
       await reportWrongCode();
-      setTimer(prev => prev + 60); // Add 1 minute penalty
+      // Update local penalty counter instead of global timer
+      setPenaltyTime(prev => prev + 60); // Add 1 minute penalty
       setError('That\'s not right. A 1-minute penalty has been added. Try again!');
       
       addTerminalMessage("PHRASE VERIFICATION FAILED - SECURITY ALERT", "error");
@@ -200,9 +199,11 @@ const StageTwo = ({ timer, setTimer }) => {
           <span>FACILITY SECTION:</span> COMMUNICATION CENTER
         </div>
         
-        <div className="timer-display">
-          TIME: {Math.floor(timer / 60)}m {timer % 60}s
-        </div>
+        {penaltyTime > 0 && (
+          <div className="penalty-display">
+            PENALTY TIME: {Math.floor(penaltyTime / 60)}m {penaltyTime % 60}s
+          </div>
+        )}
         
         <div className="seed-badge">
           LAB ID: <strong>{seed}</strong>
